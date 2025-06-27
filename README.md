@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🏄‍♂️ California Surf Forecast App
 
 A comprehensive web application that aggregates surf forecasts from multiple APIs and ranks California surf spots based on user preferences including skill level, wave height, and wind tolerance.
@@ -250,3 +251,6 @@ For support, please open an issue on GitHub or contact the development team.
 ---
 
 **Happy Surfing! 🏄‍♂️🌊**
+=======
+# surf-forecast-app
+>>>>>>> 044503f55b3188737c3bff6159616eca396e3309
