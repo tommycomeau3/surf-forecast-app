@@ -1,0 +1,197 @@
+.location-selector h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+}
+
+.current-location {
+  background: #e8f5e8;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #27ae60;
+}
+
+.location-info {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.location-source {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.error-message {
+  background: #fee;
+  color: #c0392b;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border-left: 4px solid #e74c3c;
+  margin-bottom: 20px;
+}
+
+.location-actions {
+  margin-bottom: 20px;
+}
+
+.gps-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.gps-button {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.gps-button:hover:not(:disabled) {
+  background: #229954;
+  transform: translateY(-1px);
+}
+
+.gps-button:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.manual-button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.manual-button:hover {
+  background: #2980b9;
+}
+
+.manual-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.location-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.location-input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.location-input:disabled {
+  background: #f8f9fa;
+  color: #6c757d;
+}
+
+.search-button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.search-button:hover:not(:disabled) {
+  background: #2980b9;
+}
+
+.search-button:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+.back-button {
+  background: #95a5a6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background: #7f8c8d;
+}
+
+.location-help {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+  color: #5a6c7d;
+}
+
+.location-help p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .input-group {
+    flex-direction: column;
+  }
+  
+  .gps-section {
+    gap: 12px;
+  }
+  
+  .gps-button,
+  .manual-button,
+  .search-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .location-selector h3 {
+    font-size: 1.1rem;
+  }
+  
+  .current-location,
+  .location-help {
+    padding: 12px;
+  }
+  
+  .gps-button,
+  .search-button {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+}
