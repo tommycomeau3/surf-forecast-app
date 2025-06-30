@@ -1,6 +1,13 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
+console.log('🔧 Database Configuration:');
+console.log('- Host:', process.env.DB_HOST || 'localhost');
+console.log('- Port:', process.env.DB_PORT || 5432);
+console.log('- Database:', process.env.DB_NAME || 'surf_forecast');
+console.log('- User:', process.env.DB_USER || 'postgres');
+console.log('- Password:', process.env.DB_PASSWORD ? '[SET]' : '[NOT SET]');
+
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || 5432,
@@ -11,11 +18,27 @@ const pool = new Pool({
 
 // Test database connection
 pool.on('connect', () => {
-  console.log('Connected to PostgreSQL database');
+  console.log('✅ Connected to PostgreSQL database');
 });
 
 pool.on('error', (err) => {
-  console.error('Database connection error:', err);
+  console.error('❌ Database connection error:', err.message);
+  console.error('💡 Troubleshooting tips:');
+  console.error('   1. Make sure PostgreSQL is running');
+  console.error('   2. Check your database credentials in server/.env');
+  console.error('   3. Ensure the database "surf_forecast" exists');
+  console.error('   4. Try: createdb surf_forecast');
+});
+
+// Test the connection immediately
+pool.connect((err, client, release) => {
+  if (err) {
+    console.error('❌ Failed to connect to database:', err.message);
+    console.error('💡 This might be why the server is not starting properly');
+  } else {
+    console.log('✅ Database connection test successful');
+    release();
+  }
 });
 
 module.exports = pool;
