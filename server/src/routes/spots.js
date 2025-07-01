@@ -22,7 +22,7 @@ router.get('/nearby', async (req, res) => {
       return res.status(400).json({ error: 'Latitude and longitude are required' });
     }
 
-    // Calculate distance using Haversine formula in SQL
+    // Calculate distance using Haversine formula in SQL - Fixed query
     const query = `
       SELECT *,
         (6371 * acos(
@@ -31,7 +31,7 @@ router.get('/nearby', async (req, res) => {
           sin(radians($1)) * sin(radians(latitude))
         )) AS distance_km
       FROM surf_spots
-      HAVING (6371 * acos(
+      WHERE (6371 * acos(
         cos(radians($1)) * cos(radians(latitude)) *
         cos(radians(longitude) - radians($2)) +
         sin(radians($1)) * sin(radians(latitude))

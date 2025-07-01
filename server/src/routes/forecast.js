@@ -64,7 +64,7 @@ router.post('/ranked', async (req, res) => {
       return res.status(400).json({ error: 'Location is required' });
     }
     
-    // Get nearby spots
+    // Get nearby spots - Fixed SQL query
     const spotsQuery = `
       SELECT *,
         (6371 * acos(
@@ -73,7 +73,7 @@ router.post('/ranked', async (req, res) => {
           sin(radians($1)) * sin(radians(latitude))
         )) AS distance_km
       FROM surf_spots
-      HAVING (6371 * acos(
+      WHERE (6371 * acos(
         cos(radians($1)) * cos(radians(latitude)) *
         cos(radians(longitude) - radians($2)) +
         sin(radians($1)) * sin(radians(latitude))

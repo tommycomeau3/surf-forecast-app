@@ -1,7 +1,7 @@
-import React from 'react';
-import './Header.css';
+import React from 'react'; // Import React library
+import './Header.css'; // Import css file
 
-const Header = () => {
+const Header = () => { // Defines functional component called Header
   return (
     <header className="header">
       <div className="header-container">
@@ -18,4 +18,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Header; // Exports Header component so other files can import and use it
