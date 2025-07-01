@@ -24,17 +24,18 @@ pool.on('connect', () => {
 pool.on('error', (err) => {
   console.error('❌ Database connection error:', err.message);
   console.error('💡 Troubleshooting tips:');
-  console.error('   1. Make sure PostgreSQL is running');
+  console.error('   1. Make sure PostgreSQL is running: brew services start postgresql@15');
   console.error('   2. Check your database credentials in server/.env');
-  console.error('   3. Ensure the database "surf_forecast" exists');
-  console.error('   4. Try: createdb surf_forecast');
+  console.error('   3. Ensure the database "surf_forecast" exists: createdb surf_forecast');
+  console.error('   4. Initialize database: psql -d surf_forecast -f server/src/models/init.sql');
 });
 
 // Test the connection immediately
 pool.connect((err, client, release) => {
   if (err) {
     console.error('❌ Failed to connect to database:', err.message);
-    console.error('💡 This might be why the server is not starting properly');
+    console.error('💡 The server will start but routes may not work properly');
+    console.error('💡 Fix the database connection to enable full functionality');
   } else {
     console.log('✅ Database connection test successful');
     release();

@@ -1,21 +1,27 @@
+// Import React and necessary hooks
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { apiService } from '../services/apiService';
-import './SpotDetail.css';
+import { useParams, Link } from 'react-router-dom'; // For getting URL parameters and linking back
+import { apiService } from '../services/apiService'; // Service for making API calls
+import './SpotDetail.css'; // CSS styling for this component
 
+// Main component
 const SpotDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Get the spot ID from the URL (e.g. /spot/123)
+  
+  // State for storing spot data, forecast, and UI feedback
   const [spot, setSpot] = useState(null);
   const [forecast, setForecast] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // When the component loads or the `id` changes, fetch the spot details
   useEffect(() => {
     if (id) {
       fetchSpotDetails();
     }
   }, [id]);
 
+  // Fetch spot details and forecast data from the API
   const fetchSpotDetails = async () => {
     setLoading(true);
     setError('');
@@ -31,6 +37,7 @@ const SpotDetail = () => {
     setLoading(false);
   };
 
+  // Format date and time from ISO string
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);
     return {
@@ -39,14 +46,17 @@ const SpotDetail = () => {
     };
   };
 
+  // Format wave height in feet
   const formatWaveHeight = (height) => {
     return height ? `${height.toFixed(1)}ft` : 'N/A';
   };
 
+  // Format wind speed in mph
   const formatWindSpeed = (speed) => {
     return speed ? `${speed.toFixed(0)} mph` : 'N/A';
   };
 
+  // Convert wind direction from degrees to compass direction
   const getWindDirection = (degrees) => {
     if (!degrees) return 'N/A';
     const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
@@ -54,6 +64,7 @@ const SpotDetail = () => {
     return directions[index];
   };
 
+  // Return a CSS color class based on difficulty level
   const getDifficultyColor = (difficulty) => {
     switch (difficulty) {
       case 'beginner': return 'green';
@@ -63,6 +74,7 @@ const SpotDetail = () => {
     }
   };
 
+  // Show loading spinner while data is being fetched
   if (loading) {
     return (
       <div className="spot-detail-loading">
@@ -72,6 +84,7 @@ const SpotDetail = () => {
     );
   }
 
+  // Show error message if something went wrong
   if (error) {
     return (
       <div className="spot-detail-error">
@@ -81,6 +94,7 @@ const SpotDetail = () => {
     );
   }
 
+  // If spot data is missing, show fallback
   if (!spot) {
     return (
       <div className="spot-detail-error">
@@ -92,16 +106,17 @@ const SpotDetail = () => {
 
   return (
     <div className="spot-detail">
+      
+      {/* Header with back button and refresh */}
       <div className="spot-detail-header">
         <Link to="/" className="back-button">← Back to Spots</Link>
-        <button onClick={fetchSpotDetails} className="refresh-button">
-          🔄 Refresh
-        </button>
+        <button onClick={fetchSpotDetails} className="refresh-button">🔄 Refresh</button>
       </div>
 
+      {/* Spot info card */}
       <div className="spot-info-card">
         <h1 className="spot-title">{spot.name}</h1>
-        
+
         <div className="spot-meta">
           <div className="meta-item">
             <span className="meta-label">📍 Region:</span>
@@ -113,9 +128,7 @@ const SpotDetail = () => {
           </div>
           <div className="meta-item">
             <span className="meta-label">🏄‍♂️ Difficulty:</span>
-            <span 
-              className={`difficulty-badge ${getDifficultyColor(spot.difficulty_level)}`}
-            >
+            <span className={`difficulty-badge ${getDifficultyColor(spot.difficulty_level)}`}>
               {spot.difficulty_level}
             </span>
           </div>
@@ -126,6 +139,7 @@ const SpotDetail = () => {
         </div>
       </div>
 
+      {/* Forecast section */}
       {forecast.length > 0 ? (
         <div className="forecast-section">
           <h2>📊 Forecast</h2>
@@ -160,7 +174,8 @@ const SpotDetail = () => {
               </tbody>
             </table>
           </div>
-          
+
+          {/* Show forecast limit message if there's more than 24 entries */}
           {forecast.length > 24 && (
             <p className="forecast-note">
               Showing next 24 hours. Total forecast data: {forecast.length} entries.
@@ -168,6 +183,7 @@ const SpotDetail = () => {
           )}
         </div>
       ) : (
+        // If no forecast data
         <div className="no-forecast">
           <h2>📊 Forecast</h2>
           <p>No forecast data available for this spot.</p>
@@ -175,6 +191,7 @@ const SpotDetail = () => {
         </div>
       )}
 
+      {/* Surf tips based on difficulty and break type */}
       <div className="spot-tips">
         <h3>💡 Tips</h3>
         <div className="tips-content">
