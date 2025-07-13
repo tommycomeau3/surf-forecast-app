@@ -112,7 +112,7 @@ class ForecastService {
     try {
       for (const forecast of forecastData) {
         await pool.query(`
-          INSERT INTO forecast_cache 
+          INSERT INTO forecast_cache
           (spot_id, source, wave_height, wave_period, wind_speed, wind_direction, forecast_time)
           VALUES ($1, $2, $3, $4, $5, $6, $7)
           ON CONFLICT DO NOTHING
@@ -122,7 +122,7 @@ class ForecastService {
           forecast.waveHeight,
           forecast.wavePeriod,
           forecast.windSpeed,
-          forecast.windDirection,
+          Math.round(forecast.windDirection), // Convert to integer
           forecast.time
         ]);
       }
@@ -160,7 +160,7 @@ class ForecastService {
 
       return forecasts;
     } catch (error) {
-      console.error('Error getting forecast for spot:', error);
+      console.error(`Error getting forecast for spot ${spotId}:`, error);
       return [];
     }
   }
