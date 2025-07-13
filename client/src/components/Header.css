@@ -26,6 +26,7 @@
 }
 
 .tagline {
+  display: none;
   font-size: 0.9rem;
   opacity: 0.8;
   margin-left: 10px;

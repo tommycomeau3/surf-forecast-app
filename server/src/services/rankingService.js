@@ -4,36 +4,83 @@ const forecastService = require('./forecastService');
 class RankingService {
   // Calculate wave height score based on user preferences
   calculateWaveHeightScore(waveHeight, minHeight, maxHeight) {
-    if (waveHeight < minHeight || waveHeight > maxHeight) {
+    // Convert string preferences to numbers
+    const minHeightNum = parseFloat(minHeight);
+    const maxHeightNum = parseFloat(maxHeight);
+    
+    // More lenient scoring - give partial credit for waves close to range
+    if (waveHeight < minHeightNum * 0.7) {
       return 0;
     }
     
-    // Perfect score if within range
-    const midPoint = (minHeight + maxHeight) / 2;
-    const distance = Math.abs(waveHeight - midPoint);
-    const maxDistance = (maxHeight - minHeight) / 2;
+    if (waveHeight > maxHeightNum * 1.3) {
+      return 0;
+    }
     
-    return Math.max(0, 1 - (distance / maxDistance));
+    // Perfect score if within preferred range
+    if (waveHeight >= minHeightNum && waveHeight <= maxHeightNum) {
+      const midPoint = (minHeightNum + maxHeightNum) / 2;
+      const distance = Math.abs(waveHeight - midPoint);
+      const maxDistance = (maxHeightNum - minHeightNum) / 2;
+      return Math.max(0, 1 - (distance / maxDistance));
+    }
+    
+    // Partial score for waves close to range
+    let score = 0;
+    if (waveHeight < minHeightNum) {
+      // Below range - give partial credit
+      const deficit = minHeightNum - waveHeight;
+      const allowedDeficit = minHeightNum * 0.3;
+      score = Math.max(0, 0.5 * (1 - deficit / allowedDeficit));
+    } else {
+      // Above range - give partial credit
+      const excess = waveHeight - maxHeightNum;
+      const allowedExcess = maxHeightNum * 0.3;
+      score = Math.max(0, 0.5 * (1 - excess / allowedExcess));
+    }
+    
+    return score;
   }
 
   // Calculate wind score (offshore winds are preferred)
   calculateWindScore(windSpeed, windDirection, maxWindSpeed) {
-    if (windSpeed > maxWindSpeed) {
+    const maxWindSpeedNum = parseFloat(maxWindSpeed);
+    
+    if (windSpeed > maxWindSpeedNum) {
       return 0;
     }
     
-    // Wind speed score (lower is better)
-    const windSpeedScore = Math.max(0, 1 - (windSpeed / maxWindSpeed));
+    // Wind speed score (lower is better, but give more variation)
+    const windSpeedScore = Math.max(0, 1 - (windSpeed / maxWindSpeedNum));
     
-    // Wind direction score (offshore winds: 45-135 degrees are good for most spots)
+    // Improved wind direction scoring with more granular scoring
     let windDirectionScore = 0.5; // neutral score
-    if (windDirection >= 45 && windDirection <= 135) {
-      windDirectionScore = 1; // offshore winds
-    } else if (windDirection >= 225 && windDirection <= 315) {
-      windDirectionScore = 0.2; // onshore winds (not ideal)
+    
+    // Normalize direction to 0-360
+    const normalizedDirection = ((windDirection % 360) + 360) % 360;
+    
+    if (normalizedDirection >= 45 && normalizedDirection <= 135) {
+      // Offshore winds (NE to SE) - best for most California spots
+      windDirectionScore = 1.0;
+    } else if (normalizedDirection >= 315 || normalizedDirection <= 45) {
+      // North winds - good but not perfect
+      windDirectionScore = 0.8;
+    } else if (normalizedDirection >= 135 && normalizedDirection <= 180) {
+      // South winds - decent
+      windDirectionScore = 0.7;
+    } else if (normalizedDirection >= 180 && normalizedDirection <= 225) {
+      // SW winds - not great but manageable
+      windDirectionScore = 0.4;
+    } else {
+      // W to NW winds (225-315) - onshore, not ideal
+      const distanceFromWorst = Math.min(
+        Math.abs(normalizedDirection - 270), // Distance from due west (worst)
+        45 // Max distance in this range
+      );
+      windDirectionScore = 0.1 + (distanceFromWorst / 45) * 0.3; // 0.1 to 0.4 range
     }
     
-    return (windSpeedScore * 0.7) + (windDirectionScore * 0.3);
+    return (windSpeedScore * 0.6) + (windDirectionScore * 0.4);
   }
 
   // Calculate skill level compatibility score
@@ -104,8 +151,8 @@ class RankingService {
       try {
         // Get forecast data for the spot
         const forecastData = await forecastService.getForecastForSpot(
-          spot.id, 
-          spot.latitude, 
+          spot.id,
+          spot.latitude,
           spot.longitude
         );
 

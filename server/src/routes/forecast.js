@@ -109,7 +109,7 @@ router.post('/ranked', async (req, res) => {
   }
 });
 
-// Get current conditions for multiple spots
+// Get current conditions for multiple spots 
 router.post('/conditions', async (req, res) => {
   try {
     const { spotIds } = req.body;
